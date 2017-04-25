@@ -1,0 +1,28 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <title>RoomTemp</title>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href='//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </head>
+    <body>
+      <div class="page-header">
+          <h1><a href="/">RoomTemp</a></h1>
+          <h5>
+            {% if user.is_authenticated %}
+              User: {{ user.get_username }}
+            {% endif %}
+          </h5>
+      </div>
+      <div class="content container">
+          <div class="row">
+              <div class="col-md-12">
+              {% block content %}
+              {% endblock %}
+              </div>
+          </div>
+      </div>
+    </body>
+</html>
