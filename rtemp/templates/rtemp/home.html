@@ -1,5 +1,10 @@
 {% extends 'rtemp/base.html' %}
 
 {% block content %}
-  <p>Hello world!</p>
+  <p>Enter your room code:</p>
+  <form action="/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit" />
+  </form>
 {% endblock %}

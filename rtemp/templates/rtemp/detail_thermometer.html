@@ -1,0 +1,20 @@
+{% extends 'rtemp/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <p>{{room}}</p>
+  <div class="thermometer_container">
+    <div class="thermometer">
+      <div class="stem">
+        <div class="fluid"></div>
+      </div>
+    </div>
+    <div class="base"></div>
+  </div>
+
+  <a id="vote" class="btn btn-primary" data-url = "{{ request.scheme }}://{{ request.get_host }}{% url 'vote' room.id %}" href="#" role="button">Vote</a>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'javascript/thermometer.js' %}"></script>
+{% endblock %}

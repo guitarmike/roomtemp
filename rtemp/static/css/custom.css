@@ -2,6 +2,63 @@ body {
     padding-left: 15px;
 }
 
-h1 a {
-    color: #FCA205;
+h1 {
+    color: red;
+}
+.thermometer_container {
+  width: 80px;
+  height: 309px;
+  display: block;
+  position: relative;
+  margin: 50px auto;
+}
+
+.thermometer {
+  border: 5px solid #5C525F;
+  border-bottom: transparent;
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  left: 20px;
+  width: 40px;
+  height: 238px;
+  border-radius: 50px 50px 0 0;
+  background: #FFF;
+}
+
+.base {
+  box-shadow: 0 0 0 5px #FFF, 0 0 0 10px #5C525F;
+  background: red;
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  line-height: 60px;
+  color: #FFF;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+}
+
+.stem {
+  background: #EFEFEF;
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 232px;
+  border-radius: 10px 10px 0 0;
+  margin: 5px auto;
+}
+
+.stem .fluid {
+  background: red;
+  display: block;
+  width: 100%;
+  height: 0%;
+  border-radius: 25px 25px 0 0;
+  position: absolute;
+  bottom: 0;
 }
