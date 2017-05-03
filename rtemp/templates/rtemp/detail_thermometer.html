@@ -3,10 +3,12 @@
 
 {% block content %}
   <p>{{room}}</p>
+  <p>Active attendees: {{ count }}</p>
+  <p>Current votes: {{ percent }}%
   <div class="thermometer_container">
     <div class="thermometer">
       <div class="stem">
-        <div class="fluid"></div>
+        <div class="fluid" id="fluid" data-status="{{ request.scheme }}://{{ request.get_host }}{% url 'status' room.id %}"></div>
       </div>
     </div>
     <div class="base"></div>
@@ -16,5 +18,5 @@
 {% endblock %}
 
 {% block js %}
-  <script src="{% static 'javascript/thermometer.js' %}"></script>
+  <script src='/static/javascript/thermometer.js?{% now "U" %}'></script>
 {% endblock %}

@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
@@ -37,6 +38,30 @@ class Room(models.Model):
         except IntegrityError:
             self.makeCode()
         return self.save()
+
+    def authenticate_attendee(self, key):
+        try:
+            att = self.attendee_set.get(session=key)
+            att.last_action = timezone.now()
+            att.save()
+            return True
+        except ObjectDoesNotExist:
+            return False
+
+    def add_attendee(self, key):
+        self.attendee_set.create(
+            room=self,
+            session=key,
+            last_action = timezone.now()
+        )
+        return True
+
+    def attendee_count(self):
+        return self.attendee_set.filter(last_action__range=(timezone.now() - datetime.timedelta(minutes = 5), timezone.now())).count()
+
+    def current_vote_count(self):
+        return self.vote_set.filter(created_date__range=(timezone.now() - self.vote_interval, timezone.now())).count()
+
 
 class Vote(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
