@@ -62,3 +62,11 @@ h1 {
   position: absolute;
   bottom: 0;
 }
+
+.big_button{
+  font-size: 2em;
+}
+
+#vote{
+  width:75%;
+}

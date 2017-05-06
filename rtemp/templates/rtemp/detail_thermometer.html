@@ -1,22 +1,43 @@
 {% extends 'rtemp/base.html' %}
 {% load staticfiles %}
 
-{% block content %}
-  <p>{{room}}</p>
-  <p>Active attendees: {{ count }}</p>
-  <p>Current votes: {{ percent }}%
-  <div class="thermometer_container">
-    <div class="thermometer">
-      <div class="stem">
-        <div class="fluid" id="fluid" data-status="{{ request.scheme }}://{{ request.get_host }}{% url 'status' room.id %}"></div>
-      </div>
-    </div>
-    <div class="base"></div>
-  </div>
 
-  <a id="vote" class="btn btn-primary" data-url = "{{ request.scheme }}://{{ request.get_host }}{% url 'vote' room.id %}" href="#" role="button">Vote</a>
+
+{% block content %}
+  <div class='row'>
+    <div class="col-lg-4">
+      <h2 class='text-center'>{{room}}</h2>
+      <p>Active attendees: <span id='attendee_count'>{{ count }}</span></p>
+      <p>Current votes: <span id='vote_count'>{{ percent }}</span>%</p>
+      <h3>Join my room!</h3>
+      <p>Visit roomte.mp and enter room code <strong>{{ room.code }}</strong></p>
+
+    </div>
+    <div class="col-lg-4">
+      {% if show_widget %}
+        <div class="thermometer_container">
+          <div class="thermometer">
+            <div class="stem">
+              <div class="fluid" id="fluid" data-status="{{ request.scheme }}://{{ request.get_host }}{% url 'status' room.id %}"></div>
+            </div>
+          </div>
+          <div class="base"></div>
+        </div>
+      {% endif %}
+      </div>
+
+    <div class="col-lg-4 hidden-sm-down">
+      <div id='qr'></div>
+    </div>
+  </div>
+  <div class='row'>
+    <div class="col-lg-4 col-lg-offset-4 text-center">
+      <a id="vote" class="btn btn-primary " data-url = "{{ request.scheme }}://{{ request.get_host }}{% url 'vote' room.id %}" href="#" role="button"><span class='big_button glyphicon glyphicon-thumbs-up'></span><br>Vote</a>
+    </div>
+  </div>
 {% endblock %}
 
 {% block js %}
   <script src='/static/javascript/thermometer.js?{% now "U" %}'></script>
+  <script src='/static/javascript/jquery.qrcode.min.js?{% now "U" %}'></script>
 {% endblock %}

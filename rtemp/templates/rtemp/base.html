@@ -18,11 +18,12 @@
           <nav class="navbar navbar-inverse">
             <div class="container-fluid">
               <div class="navbar-header">
-                <a class="navbar-brand" href="#">RoomTemp</a>
+                <a class="navbar-brand" href="{% url 'home' %}">RoomTemp</a>
               </div>
               <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                   <li><a href="#">{{user.get_username}}</a></li>
+                  <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 {% else %}
                   <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                   <li><a href="{% url 'login'%}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>

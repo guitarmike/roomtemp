@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.crypto import get_random_string
+from django.core.urlresolvers import reverse
 
 
 class Room(models.Model):
@@ -31,6 +32,9 @@ class Room(models.Model):
 
     def __str__(self):
         return self.text
+
+    def get_absolute_url(self):
+        return reverse('detail',kwargs={'room_id':self.id})
 
     def makeCode(self):
         try:
@@ -62,12 +66,27 @@ class Room(models.Model):
     def current_vote_count(self):
         return self.vote_set.filter(created_date__range=(timezone.now() - self.vote_interval, timezone.now())).count()
 
+    def able_to_vote(self, key):
+        att = self.attendee_set.get(session=key)
+        try:
+            last_vote = att.vote_set.latest('created_date')
+        except ObjectDoesNotExist:
+            return True
+        return last_vote.created_date+self.vote_interval<=timezone.now()
 
-class Vote(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    created_date = models.DateTimeField(default=timezone.now)
+    def owned_by(self, user):
+        return self.owner == user
+
+    def show_widget(self, user):
+        return self.owned_by(user) or (self.public == True)
+
 
 class Attendee(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     last_action = models.DateTimeField(default=timezone.now)
     session = models.CharField(max_length=300, default="")
+
+class Vote(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE, default="9")
+    created_date = models.DateTimeField(default=timezone.now)
