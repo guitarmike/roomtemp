@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^(?P<room_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^(?P<room_id>[0-9]+)/vote$', views.vote, name='vote'),
     url(r'^(?P<room_id>[0-9]+)/status$', views.status, name='status'),
+    url(r'^(?P<room_id>[0-9]+)/needle_status$', views.needle_status, name='needle_status'),
     url('^accounts/', include('django.contrib.auth.urls')),
 ]

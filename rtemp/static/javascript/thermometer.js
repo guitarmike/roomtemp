@@ -1,6 +1,6 @@
 $(document).ready(function(){
   update_thermometer();
-  $('#qr').qrcode("this plugin is great");
+  $('#qr').qrcode($("#main_container").data("page-url"));
   var update_interval = setInterval(update_thermometer, 15000);
 
   $("#vote").click(function(){

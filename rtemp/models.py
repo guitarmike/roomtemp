@@ -66,6 +66,12 @@ class Room(models.Model):
     def current_vote_count(self):
         return self.vote_set.filter(created_date__range=(timezone.now() - self.vote_interval, timezone.now())).count()
 
+    def thumbs_up_count(self):
+        return self.vote_set.filter(thumbs__exact =  "+").filter(created_date__range=(timezone.now() - self.vote_interval, timezone.now())).count()
+
+    def thumbs_down_count(self):
+        return self.vote_set.filter(thumbs = "-").filter(created_date__range=(timezone.now() - self.vote_interval, timezone.now())).count()
+
     def able_to_vote(self, key):
         att = self.attendee_set.get(session=key)
         try:
@@ -90,3 +96,13 @@ class Vote(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE, default="9")
     created_date = models.DateTimeField(default=timezone.now)
+
+    THUMBS_UP_DOWN = (
+        ('+', 'Thumbs Up'),
+        ('-', 'Thumbs Down'),
+    )
+
+    thumbs = models.CharField(max_length=1, choices=THUMBS_UP_DOWN, blank=True, help_text='Thumbs up/down')
+
+    def __str__(self):
+        return self.room.text+": "+self.thumbs

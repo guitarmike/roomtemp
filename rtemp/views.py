@@ -38,13 +38,23 @@ def detail(request, room_id):
     if room.room_type == "t":
         return render(request, 'rtemp/detail_thermometer.html', {'room':room, 'show_widget':room.show_widget(request.user), 'count': room.attendee_count(), 'percent': room.current_vote_count()/room.attendee_count()*100})
     else:
-        return render(request, 'rtemp/detail_needle.html', {'room':room})
+        return render(request, 'rtemp/detail_needle.html', {'room':room, 'show_widget':room.show_widget(request.user), 'count':room.attendee_count(), 'percent': room.current_vote_count()/room.attendee_count()*100})
 
 def vote(request, room_id):
     room = Room.objects.get(pk=room_id)
-    vote = Vote.objects.create( room = room , created_date = timezone.now(), attendee = Attendee.objects.get(session=request.session.session_key))
+    # Need error checking to prevent vote from being cast with improper payload for room type
+    if room.room_type == "n":
+        if request.GET.get('payload'):
+            thumbs = request.GET.get('payload')
+            if thumbs not in ['+','-']:
+                return JsonResponse(status=500, data={})
+        else:
+            return JsonResponse(status=500, data={})
+    else:
+        thumbs = ""
+
+    vote = Vote.objects.create( room = room , thumbs = thumbs, created_date = timezone.now(), attendee = room.attendee_set.get(session=request.session.session_key))
     vote.save()
-    percent = room.current_vote_count()/room.attendee_count()*100
     return JsonResponse(status=200, data={
         'interval': room.vote_interval.total_seconds()
     })
@@ -57,6 +67,24 @@ def status(request, room_id):
         percent = "{:.2f}".format(votes/attendees*100)
     else:
         percent = "0.00%"
+    return JsonResponse(status=200, data={
+        'votes': votes,
+        'attendees': attendees,
+        'percent': percent,
+        'able_to_vote': room.able_to_vote(request.session.session_key)
+
+    })
+
+def needle_status(request, room_id):
+    room = Room.objects.get(pk=room_id)
+    thumbs_up_votes = room.thumbs_up_count()
+    thumbs_down_votes = room.thumbs_down_count()
+    votes = thumbs_up_votes + thumbs_down_votes
+    attendees = room.attendee_count()
+    if votes != 0:
+        percent = "{:.2f}".format(thumbs_up_votes/votes*100)
+    else:
+        percent = "50.00"
     return JsonResponse(status=200, data={
         'votes': votes,
         'attendees': attendees,
